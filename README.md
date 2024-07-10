@@ -1,4 +1,4 @@
-# interface-docs
+# interdoc
 
 This is a [bun](https://bun.sh/) app for generating simple (GitHub flavoured) markdown files documenting interfaces.
 

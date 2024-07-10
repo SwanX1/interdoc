@@ -1,16 +1,24 @@
 {
   "name": "interdoc",
   "module": "src/index.ts",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A bun app for generating simple (GitHub flavoured) markdown files documenting interfaces.",
   "license": "MIT",
+  "bin": {
+    "interdoc": "src/index.ts"
+  },
   "author": {
     "name": "Kārlis Čerņavskis",
     "email": "karliscern@gmail.com",
     "url": "https://cernavskis.dev/"
   },
-  "bin": {
-    "interdoc": "src/index.ts"
+  "bugs": {
+    "email": "karliscern+ghissue@gmail.com",
+    "url": "https://github.com/SwanX1/interdoc/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SwanX1/interdoc.git"
   },
   "type": "module",
   "devDependencies": {

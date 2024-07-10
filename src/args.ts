@@ -136,7 +136,7 @@ export class ArgumentParser {
       }
       flagText.push({
         option: flag,
-        text: (`${aliasText}--${flag} ` + (customHelp[flag] ?? '')).trim()
+        text: (`${aliasText}--${flag}\t` + (customHelp[flag] ?? '')).trim()
       });
     }
 
@@ -151,7 +151,7 @@ export class ArgumentParser {
       }
       optionText.push({
         option,
-        text: (`${aliasText}--${option}=<value> ` + (customHelp[option] ?? '')).trim()
+        text: (`${aliasText}--${option}=<value>\t` + (customHelp[option] ?? '')).trim()
       });
     }
 
