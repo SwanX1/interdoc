@@ -6,7 +6,7 @@
   "license": "MIT",
   "type": "module",
   "bin": {
-    "interdoc": "./interdoc.js"
+    "interdoc": "interdoc.js"
   },
   "author": {
     "name": "Kārlis Čerņavskis",
