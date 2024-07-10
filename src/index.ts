@@ -18,7 +18,7 @@ const args = argParser.parse(process.argv.slice(2));
 
 if (args.help) {
   console.log(argParser.generateHelp({
-    usage: 'interface-docs [options] -i <input> [-o <output>]',
+    usage: 'interdoc [options] -i <input> [-o <output>]',
     description: 'Generate markdown documentation from TypeScript interfaces and types\nNOTE: Only exported interfaces/types are documented',
     customHelp: {
       input: 'The input file to read interfaces and types from. Will ignore any code that is not exported or is not an interface or type',
