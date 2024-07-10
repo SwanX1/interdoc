@@ -3,13 +3,19 @@ import { log } from './logger';
 
 export type Documentation = InterfaceDocumentation |  TypeDocumentation;
 
+export interface Type {
+  types: string[];
+  /** `"{} | {}[]"` would turn into `"Type1 | Type2[]"` */
+  format: string;
+}
+
 export interface PropertyDocumentation {
   name: string;
   description?: string;
   example?: string;
   optional?: boolean;
   default?: string;
-  type: string;
+  type: Type;
 }
 
 export interface InterfaceDocumentation {
@@ -23,7 +29,7 @@ export interface TypeDocumentation {
   name: string;
   description?: string;
   example?: string;
-  type: string;
+  type: Type;
 }
 
 const resolvedImports: Map<string, Documentation[] | null> = new Map();
@@ -54,7 +60,7 @@ export async function extractDocumentation(contents: string): Promise<Documentat
         const prop = extractPropertyDocumentation(member);
         properties.push(prop);
 
-        if (prop.type === 'any') {
+        if (prop.type.types.includes('any')) {
           log(`WARNING: Could not resolve type for ${node.name.text}.${prop.name}, using 'any'`);
         }
       }
@@ -81,7 +87,7 @@ export async function extractDocumentation(contents: string): Promise<Documentat
         name: node.name.text,
         description: getJSDocComment(jsDoc),
         example: getJSDocComment(jsDoc?.tags?.find(tag => tag.tagName.text === 'example')),
-        type: node.type.getText(),
+        type: extractType(node.type),
       });
     } else if (ts.isImportDeclaration(node)) {
       log('WARNING: Importing is not supported yet');
@@ -125,7 +131,7 @@ export async function extractDocumentation(contents: string): Promise<Documentat
 
 function extractPropertyDocumentation(node: ts.PropertySignature): PropertyDocumentation {
   const name = node.name.getText();
-  const type = node.type?.getText() ?? 'any';
+  const type = extractType(node.type);
   const optional = node.questionToken !== undefined;
 
   const jsDoc = node.getChildren().find(child => ts.isJSDoc(child)) as ts.JSDoc | undefined;
@@ -142,6 +148,44 @@ function extractPropertyDocumentation(node: ts.PropertySignature): PropertyDocum
     default: $default,
     example,
   };
+}
+
+function extractType(node?: ts.TypeNode): Type {
+  if (!node) {
+    return {
+      types: ['any'],
+      format: '{}',
+    };
+  }
+
+  if (ts.isTypeReferenceNode(node)) {
+    return {
+      types: [node.typeName.getText()],
+      format: '{}',
+    };
+  }
+
+  if (ts.isArrayTypeNode(node)) {
+    const type = extractType(node.elementType);
+    return {
+      types: type.types,
+      format: `${type.format}[]`,
+    };
+  }
+
+  if (ts.isUnionTypeNode(node) || ts.isIntersectionTypeNode(node)) {
+    const types = node.types.map(extractType);
+    return {
+      types: types.flatMap(t => t.types),
+      format: types.map(t => t.format).join(' | '),
+    };
+  }
+
+  return {
+    types: [node.getText()],
+    format: '{}',
+  };
+
 }
 
 function getJSDocComment(node?: Pick<ts.JSDoc, 'comment'>): string | undefined {
