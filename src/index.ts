@@ -1,3 +1,4 @@
+#!/usr/bin/env bun
 import type { BunFile } from 'bun';
 import { ArgumentParser } from './args';
 import { extractDocumentation } from './extract';
