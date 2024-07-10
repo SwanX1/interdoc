@@ -1,4 +1,5 @@
 import type { Documentation } from "./extract";
+import { log } from "./logger";
 
 export type LinkedDocumentation = LinkedInterfaceDocumentation | LinkedTypeDocumentation;
 
@@ -28,7 +29,7 @@ export interface Link {
   format: string;
 }
 
-export function preprocessForMarkdown(docs: Documentation[], log: (text: string) => void = () => {}): Record<string, LinkedDocumentation> {
+export function preprocessForMarkdown(docs: Documentation[]): Record<string, LinkedDocumentation> {
   const linked: Record<string, LinkedDocumentation> = {};
 
   for (const doc of docs) {
@@ -85,7 +86,7 @@ export function preprocessForMarkdown(docs: Documentation[], log: (text: string)
   return linked;
 }
 
-export function generateMarkdown(docs: Record<string, LinkedDocumentation>, format: 'tables' | 'json', log: (text: string) => void = () => {}): string {
+export function generateMarkdown(docs: Record<string, LinkedDocumentation>, format: 'tables' | 'json'): string {
   let out = '';
 
   for (const [name, doc] of Object.entries(docs)) {

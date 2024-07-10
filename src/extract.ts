@@ -1,4 +1,5 @@
 import ts from 'typescript';
+import { log } from './logger';
 
 export type Documentation = InterfaceDocumentation |  TypeDocumentation;
 
@@ -27,7 +28,7 @@ export interface TypeDocumentation {
 
 const resolvedImports: Map<string, Documentation[] | null> = new Map();
 
-export async function extractDocumentation(contents: string, log: (text: string) => void = () => {}): Promise<Documentation[]> {
+export async function extractDocumentation(contents: string): Promise<Documentation[]> {
   const docs: Documentation[] = [];
 
   log('Parsing file');
@@ -100,7 +101,7 @@ export async function extractDocumentation(contents: string, log: (text: string)
         
       //   const importContents = await Bun.file(importFile).text();
         
-      //   resolvedImports.set(importSource, await extractDocumentation(importContents, log));
+      //   resolvedImports.set(importSource, await extractDocumentation(importContents));
       // } else if (resolvedImports.get(importSource) === null) {
       //   log(`WARNING: Cannot import ${node.moduleSpecifier.getText()}, circular reference?`);
       //   continue;
